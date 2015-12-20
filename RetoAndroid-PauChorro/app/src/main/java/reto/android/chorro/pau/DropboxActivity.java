@@ -1,17 +1,20 @@
 package reto.android.chorro.pau;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
+
+import reto.android.chorro.pau.fragment.ListBooksFragment;
+import reto.android.chorro.pau.fragment.LoginFragment;
 
 /**
  * Created by pauchorroyanguas on 19/12/15.
@@ -32,7 +35,7 @@ public class DropboxActivity extends AppCompatActivity {
 
     protected static final boolean USE_OAUTH1 = false;
 
-    DropboxAPI<AndroidAuthSession> mApi;
+    protected DropboxAPI<AndroidAuthSession> mApi;
 
     protected boolean mLoggedIn;
 
@@ -40,6 +43,9 @@ public class DropboxActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // We create a new AuthSession so that we can use the Dropbox API.
         AndroidAuthSession session = buildSession();
@@ -53,6 +59,7 @@ public class DropboxActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         AndroidAuthSession session = mApi.getSession();
 
         // The next part must be inserted in the onResume() method of the
@@ -75,7 +82,7 @@ public class DropboxActivity extends AppCompatActivity {
         }
     }
 
-    protected void logOut() {
+    public void logOut() {
         // Remove credentials from the session
         mApi.getSession().unlink();
 
@@ -92,13 +99,23 @@ public class DropboxActivity extends AppCompatActivity {
         mLoggedIn = loggedIn;
         if (loggedIn) {
             Log.d(TAG, "Logged in");
-            //TODO Impl
+
+
+            ListBooksFragment listBooksFragment = new ListBooksFragment();
+
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction();
+            transaction.replace(R.id.main_container, listBooksFragment);
+
+            transaction.commit();
 
         } else {
 
             Log.d(TAG, "Logout");
 
-            //TODO Impl
+            LoginFragment loginFragment = new LoginFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.main_container, loginFragment).commit();
 
         }
     }
@@ -160,4 +177,7 @@ public class DropboxActivity extends AppCompatActivity {
     }
 
 
+    public DropboxAPI<AndroidAuthSession> getmApi() {
+        return mApi;
+    }
 }

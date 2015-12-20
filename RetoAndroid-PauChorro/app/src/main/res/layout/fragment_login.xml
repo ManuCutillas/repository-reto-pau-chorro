@@ -9,15 +9,15 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="reto.android.chorro.pau.UserLoginActivity"
-    tools:showIn="@layout/activity_user_login">
+    tools:context=".MainActivity"
+    >
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_login"
         android:id="@+id/btnLogin"
-        android:layout_marginBottom="107dp"
+        android:layout_marginBottom="56dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:src="@drawable/bqlogo"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/btnLogin"
         android:layout_centerHorizontal="true" />
 
 
