@@ -35,6 +35,7 @@ public class MainActivity extends DropboxActivity {
        Log.d(TAG, "OnResume");
     }
 
+
     public void showEbookInfo(int id)
     {
         EbookFragment ebookFragment = (EbookFragment)

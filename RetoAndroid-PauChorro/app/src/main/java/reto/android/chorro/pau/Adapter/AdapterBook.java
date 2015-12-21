@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import reto.android.chorro.pau.Model.Book;
 import reto.android.chorro.pau.R;
+//import nl.siegmann.epublib.domain.*;
 
 /**
  * Created by pauchorroyanguas on 20/12/15.
@@ -28,7 +29,7 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        this.mBooks = Book.getMockBooks();//books;
+        this.mBooks = books;
         this.mContext = context;
     }
 
@@ -56,6 +57,7 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         Book book = mBooks.elementAt(position);
         holder.title.setText(book.getId() + ": " + book.getTitle());
+        holder.cover.setImageResource(R.drawable.ic_import_contacts_black_24dp);
     }
 
 

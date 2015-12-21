@@ -1,19 +1,15 @@
 package reto.android.chorro.pau.fragment;
 
-import android.media.MediaPlayer;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 
-import java.io.IOException;
-
+import reto.android.chorro.pau.Application;
 import reto.android.chorro.pau.Model.Book;
 import reto.android.chorro.pau.R;
 
@@ -47,7 +43,7 @@ public class EbookFragment extends Fragment {
 
     public void putInfoBook(int id, View view) {
 
-        Book book = Book.getMockBooks().elementAt(id);
+        Book book = Application.getBooks().elementAt(id);
         Log.d(TAG, book.getAuthor());
         mTxtAuthor = (TextView) view.findViewById(R.id.title);
         mTxtTitle = (TextView) view.findViewById(R.id.author);

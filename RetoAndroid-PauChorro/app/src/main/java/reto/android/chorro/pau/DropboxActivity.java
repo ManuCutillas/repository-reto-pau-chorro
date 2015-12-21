@@ -100,6 +100,8 @@ public class DropboxActivity extends AppCompatActivity {
         if (loggedIn) {
             Log.d(TAG, "Logged in");
 
+            GetNameFiles download = new GetNameFiles(this, mApi, "/");
+            download.execute();
 
             ListBooksFragment listBooksFragment = new ListBooksFragment();
 

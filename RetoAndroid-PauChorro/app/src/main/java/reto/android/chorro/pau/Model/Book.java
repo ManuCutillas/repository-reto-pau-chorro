@@ -1,5 +1,7 @@
 package reto.android.chorro.pau.Model;
 
+import android.graphics.Bitmap;
+
 import java.util.Vector;
 
 /**
@@ -8,15 +10,51 @@ import java.util.Vector;
 public class Book {
 
     private int id;
+    private String nameFile;
     private String title;
     private String author;
     private String cover;
+    private String path;
+
+    public Book() {}
 
     public Book(int id, String title, String author, String cover) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.cover = cover;
+    }
+
+    public Book(int id, String title, String author, String cover, String path) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.cover = cover;
+        this.path = path;
+    }
+
+    public Book(String path, String author, String title, String nameFile, int id) {
+        this.path = path;
+        this.author = author;
+        this.title = title;
+        this.nameFile = nameFile;
+        this.id = id;
+    }
+
+    public String getNameFile() {
+        return nameFile;
+    }
+
+    public void setNameFile(String nameFile) {
+        this.nameFile = nameFile;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public int getId() {

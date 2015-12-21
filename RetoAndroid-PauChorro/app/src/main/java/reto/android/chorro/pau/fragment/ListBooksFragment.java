@@ -12,10 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.android.AndroidAuthSession;
+
 import java.util.Vector;
 
 import reto.android.chorro.pau.Adapter.AdapterBook;
 import reto.android.chorro.pau.Application;
+import reto.android.chorro.pau.DropboxActivity;
+import reto.android.chorro.pau.GetNameFiles;
 import reto.android.chorro.pau.MainActivity;
 import reto.android.chorro.pau.Model.Book;
 import reto.android.chorro.pau.R;
@@ -27,11 +32,13 @@ public class ListBooksFragment extends Fragment {
 
     private static final String TAG = "ListBooksFragment.class";
 
-    private Activity activity;
+    private DropboxActivity mActivity;
     private RecyclerView recyclerView;
     private AdapterBook adapter;
 
     private Vector<Book> books;
+
+    private DropboxAPI<AndroidAuthSession> mApi;
 
     @Override
     public void onAttach(Context context) {
@@ -39,18 +46,20 @@ public class ListBooksFragment extends Fragment {
 
         Log.d(TAG, "onAttach");
 
-        if(context instanceof Activity)
+        if(context instanceof DropboxActivity)
         {
-            this.activity = (Activity) context;
-            if(Application.getAdapter() != null)
-                adapter = Application.getAdapter();
+            this.mActivity = (DropboxActivity) context;
+            if(Application.getAdapter() != null) adapter = Application.getAdapter();
 
             else {
-                Toast.makeText(activity, "Adapter has not been initialized",
+                Toast.makeText(mActivity, "Adapter has not been initialized",
                         Toast.LENGTH_SHORT).show();
-                activity.finish();
+                mActivity.finish();
             }
             books = Book.getMockBooks();
+
+            if(mActivity != null) mApi = this.mActivity.getmApi();
+
         }
 
     }
@@ -65,8 +74,9 @@ public class ListBooksFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(activity,2));
+        recyclerView.setLayoutManager(new GridLayoutManager(mActivity,2));
         recyclerView.setAdapter(adapter);
+
 
         Toast.makeText(getContext(), "Login", Toast.LENGTH_SHORT);
 
@@ -74,9 +84,9 @@ public class ListBooksFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int id = recyclerView.getChildAdapterPosition(v);
-                Toast.makeText(activity.getApplicationContext(),
+                Toast.makeText(mActivity.getApplicationContext(),
                         "Item clicked: " + recyclerView.getChildAdapterPosition(v), Toast.LENGTH_SHORT).show();
-                ((MainActivity) activity).showEbookInfo(id);
+                ((MainActivity) mActivity).showEbookInfo(id);
 
             }
         });
