@@ -1,6 +1,7 @@
 package reto.android.chorro.pau.Adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.Vector;
 
-import reto.android.chorro.pau.Model.Book;
+//import reto.android.chorro.pau.Model.Book;
 import reto.android.chorro.pau.R;
+import nl.siegmann.epublib.domain.Book;
 //import nl.siegmann.epublib.domain.*;
 
 /**
@@ -56,8 +59,14 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Book book = mBooks.elementAt(position);
-        holder.title.setText(book.getId() + ": " + book.getTitle());
-        holder.cover.setImageResource(R.drawable.ic_import_contacts_black_24dp);
+        holder.title.setText(book.getTitle());
+
+        if(book.getCoverImage() != null)
+            try {
+                holder.cover.setImageBitmap(BitmapFactory.decodeStream(book.getCoverImage().getInputStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
 

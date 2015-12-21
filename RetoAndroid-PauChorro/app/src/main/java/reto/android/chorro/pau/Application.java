@@ -8,7 +8,8 @@ import com.dropbox.client2.android.AndroidAuthSession;
 import java.util.Vector;
 
 import reto.android.chorro.pau.Adapter.AdapterBook;
-import reto.android.chorro.pau.Model.Book;
+//import reto.android.chorro.pau.Model.Book;
+import nl.siegmann.epublib.domain.Book;
 
 /**
  * Created by pauchorroyanguas on 20/12/15.
@@ -28,7 +29,7 @@ public class Application {
     public static void initializeAdapter(Context context)
     {
         if(adapter == null) {
-            books = Book.getMockBooks();
+            books =  new Vector<>();//Book.getMockBooks();
             adapter = new AdapterBook(books, context);
         }
 

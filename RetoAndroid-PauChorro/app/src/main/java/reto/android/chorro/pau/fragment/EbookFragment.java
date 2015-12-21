@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import reto.android.chorro.pau.Application;
-import reto.android.chorro.pau.Model.Book;
+//import reto.android.chorro.pau.Model.Book;
+import nl.siegmann.epublib.domain.Book;
 import reto.android.chorro.pau.R;
 
 /**
@@ -44,11 +45,11 @@ public class EbookFragment extends Fragment {
     public void putInfoBook(int id, View view) {
 
         Book book = Application.getBooks().elementAt(id);
-        Log.d(TAG, book.getAuthor());
+
         mTxtAuthor = (TextView) view.findViewById(R.id.title);
         mTxtTitle = (TextView) view.findViewById(R.id.author);
         mTxtTitle.setText(book.getTitle());
-        mTxtAuthor.setText(book.getAuthor());
+        mTxtAuthor.setText(book.getMetadata().getAuthors().toString());
 
     }
 

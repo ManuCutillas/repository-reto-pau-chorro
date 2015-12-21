@@ -14,13 +14,17 @@ import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.exception.DropboxException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import reto.android.chorro.pau.Model.Book;
+import nl.siegmann.epublib.epub.EpubReader;
+//import reto.android.chorro.pau.Model.Book;
+import nl.siegmann.epublib.domain.Book;
 
 /**
  * Created by pauchorroyanguas on 20/12/15.
@@ -80,22 +84,14 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
             books = new Vector<>();
 
-            int i =0;
             for(DropboxAPI.DeltaEntry<Entry> entry : deltaPage.entries)
             {
                 if(entry.metadata.fileName().endsWith(".epub")) {
 
                     Log.d("Files....", entry.lcPath + ", " + entry.metadata.icon);
-                    Book book = new Book();
-                    book.setTitle(entry.metadata.fileName());
-                    book.setAuthor(entry.metadata.path);
-                    book.setPath(entry.lcPath);
-                    book.setNameFile(entry.metadata.fileName());
-                    book.setId(i);
-                    books.add(book);
-                    i++;
 
-                    String inPath = mainPath+ book.getNameFile();
+
+                    String inPath = mainPath+ entry.metadata.fileName();
                     File file=new File(inPath);
                     try {
 
@@ -106,7 +102,22 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
                         return false;
                     }
 
+
                     mApi.getFile(entry.lcPath, null, mFos, null);
+                    mFos.close();
+
+                    InputStream inputStream = new FileInputStream(file);
+
+                    nl.siegmann.epublib.domain. Book bookito =
+                            (new EpubReader()).readEpub(inputStream);
+
+                    books.add(bookito);
+
+
+                    for(int e = 0; e < bookito.getMetadata().getAuthors().size(); e++)
+                    {
+                        Log.d("Authors:", bookito.getMetadata().getAuthors().get(e) + "");
+                    }
 
                     if (mCanceled) {
                         return false;
@@ -117,6 +128,8 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
             }
 
         } catch (DropboxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
