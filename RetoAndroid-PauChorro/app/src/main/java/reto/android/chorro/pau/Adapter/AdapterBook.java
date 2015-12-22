@@ -2,14 +2,19 @@ package reto.android.chorro.pau.Adapter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 //import reto.android.chorro.pau.Model.Book;
@@ -23,11 +28,13 @@ import nl.siegmann.epublib.domain.Book;
 public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
 
     private LayoutInflater mInflater;
-    private Vector<Book> mBooks;
+    private List<Book> mBooks;
     private View.OnClickListener mOnClickListener;
     private Context mContext;
+    public static String mainPath = Environment.getExternalStorageDirectory() +
+            "/";
 
-    public AdapterBook(Vector<Book> books, Context context) {
+    public AdapterBook(List<Book> books, Context context) {
 
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -58,15 +65,23 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Book book = mBooks.elementAt(position);
-        holder.title.setText(book.getTitle());
 
-        if(book.getCoverImage() != null)
-            try {
-                holder.cover.setImageBitmap(BitmapFactory.decodeStream(book.getCoverImage().getInputStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
+            Book book = mBooks.get(position);
+            holder.title.setText(book.getTitle());
+
+            if (book.getCoverImage() != null) {
+               // Log.d("AdapterBook.java", book.getCoverImage().getHref());
+                Picasso.with(mContext).load(book.getCoverImage().getHref()).into(holder.cover);
+
+
+                try {
+                    holder.cover.setImageBitmap(BitmapFactory.decodeStream(book.getCoverImage().getInputStream()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
+
     }
 
 

@@ -51,6 +51,7 @@ public class DropboxActivity extends AppCompatActivity {
         AndroidAuthSession session = buildSession();
         mApi = new DropboxAPI<AndroidAuthSession>(session);
 
+
         // Display the proper UI state if logged in or not
         setLoggedIn(mApi.getSession().isLinked());
 

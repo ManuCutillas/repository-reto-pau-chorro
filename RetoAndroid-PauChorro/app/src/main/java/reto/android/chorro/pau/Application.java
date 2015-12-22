@@ -5,11 +5,13 @@ import android.content.Context;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 
+import java.util.List;
 import java.util.Vector;
 
 import reto.android.chorro.pau.Adapter.AdapterBook;
 //import reto.android.chorro.pau.Model.Book;
 import nl.siegmann.epublib.domain.Book;
+import reto.android.chorro.pau.Model.BookBQ;
 
 /**
  * Created by pauchorroyanguas on 20/12/15.
@@ -19,7 +21,8 @@ public class Application {
 
     private static DropboxAPI<AndroidAuthSession> mApi;
     private static AdapterBook adapter;
-    private static Vector<Book> books;
+    private static List<Book> books;
+    //private static List<BookBQ> booksBQ;
 
     public static DropboxAPI<AndroidAuthSession> getInstance() {
         if(mApi != null) return mApi;
@@ -40,7 +43,7 @@ public class Application {
         return adapter;
     }
 
-    public static Vector<Book> getBooks()
+    public static List<Book> getBooks()
     {
         return books;
     }

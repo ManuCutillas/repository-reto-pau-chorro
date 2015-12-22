@@ -1,13 +1,17 @@
 package reto.android.chorro.pau;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.DropboxAPI.Entry;
@@ -20,7 +24,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+
 
 import nl.siegmann.epublib.epub.EpubReader;
 //import reto.android.chorro.pau.Model.Book;
@@ -37,12 +43,14 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
     private String mPath;
 
     private FileOutputStream mFos;
+    DropboxAPI.DeltaPage<Entry> mDeltaPage;
+
 
     private boolean mCanceled;
     private Long mFileLen;
     private String mErrorMsg;
-    Vector<Book> books;
-    private static String mainPath = Environment.getExternalStorageDirectory() +
+    List<Book> books;
+    public static String mainPath = Environment.getExternalStorageDirectory() +
             "/";
 
 
@@ -56,6 +64,10 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
         mDialog = new ProgressDialog(context);
         mDialog.setMessage("Downloading Ebooks...");
+        mDialog.setMax(100);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mDialog.setProgress(0);
+        mDialog.setCancelable(false);
         mDialog.setButton(ProgressDialog.BUTTON_POSITIVE, "Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 mCanceled = true;
@@ -80,11 +92,29 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
         try {
 
-            DropboxAPI.DeltaPage<Entry> deltaPage = mApi.delta(null);
+            mDeltaPage = mApi.delta(null);
+
+
+
+            int sizeEntries = mDeltaPage.entries.size();
+
+            mFileLen = 0L;
+
+            for(int i = 0; i < sizeEntries; i++)
+            {
+                if(mDeltaPage.entries.get(i)
+                        .metadata.fileName().endsWith(".epub")) {
+                    mFileLen++;
+                }
+            }
+
+
+
+
 
             books = new Vector<>();
-
-            for(DropboxAPI.DeltaEntry<Entry> entry : deltaPage.entries)
+            long i = 0;
+            for(DropboxAPI.DeltaEntry<Entry> entry : mDeltaPage.entries)
             {
                 if(entry.metadata.fileName().endsWith(".epub")) {
 
@@ -93,23 +123,35 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
                     String inPath = mainPath+ entry.metadata.fileName();
                     File file=new File(inPath);
+
+
                     try {
 
                         mFos = new FileOutputStream(file);
                     } catch (FileNotFoundException e) {
                         mErrorMsg = "Couldn't create a local file to store the image";
                         Log.d("ERROR", e.getMessage());
+
                         return false;
                     }
 
+                    publishProgress(i);
+                    i++;
 
+
+                    Log.d("FILE EXIST", "The file exist");
                     mApi.getFile(entry.lcPath, null, mFos, null);
+
                     mFos.close();
 
                     InputStream inputStream = new FileInputStream(file);
 
-                    nl.siegmann.epublib.domain. Book bookito =
+                    nl.siegmann.epublib.domain.Book bookito =
                             (new EpubReader()).readEpub(inputStream);
+
+                    if (mCanceled) {
+                        return false;
+                    }
 
                     books.add(bookito);
 
@@ -117,10 +159,6 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
                     for(int e = 0; e < bookito.getMetadata().getAuthors().size(); e++)
                     {
                         Log.d("Authors:", bookito.getMetadata().getAuthors().get(e) + "");
-                    }
-
-                    if (mCanceled) {
-                        return false;
                     }
 
                 }
@@ -139,6 +177,14 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
     @Override
     protected void onProgressUpdate(Long... progress) {
         int percent = (int)(100.0*(double)progress[0]/mFileLen + 0.5);
+        Application.getBooks().clear();
+        for(Book book: books)
+        {
+            Application.getBooks().add(book);
+        }
+
+        Application.getAdapter().notifyDataSetChanged();
+
         mDialog.setProgress(percent);
     }
 
@@ -147,6 +193,23 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
         mDialog.dismiss();
 
         if (result) {
+            Application.getBooks().clear();
+            for(Book book: books)
+            {
+                Application.getBooks().add(book);
+            }
+            Application.getAdapter().notifyDataSetChanged();
+        }
+        else
+        {
+            Toast.makeText(mContext,
+                    mErrorMsg, Toast.LENGTH_SHORT).show();
+            if(mErrorMsg.trim().equalsIgnoreCase("EACCES (Permission denied)"))
+
+            ActivityCompat.requestPermissions((Activity) mContext,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    1);
+
             Application.getBooks().clear();
             for(Book book: books)
             {

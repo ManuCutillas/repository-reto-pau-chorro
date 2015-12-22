@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.dropbox.client2.android.AndroidAuthSession;
 
 import java.util.Vector;
 
+import nl.siegmann.epublib.epub.Main;
 import reto.android.chorro.pau.Adapter.AdapterBook;
 import reto.android.chorro.pau.Application;
 import reto.android.chorro.pau.DropboxActivity;
@@ -36,8 +38,6 @@ public class ListBooksFragment extends Fragment {
     private RecyclerView recyclerView;
     private AdapterBook adapter;
 
-    private Vector<Book> books;
-
     private DropboxAPI<AndroidAuthSession> mApi;
 
     @Override
@@ -56,7 +56,6 @@ public class ListBooksFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 mActivity.finish();
             }
-            books = Book.getMockBooks();
 
             if(mActivity != null) mApi = this.mActivity.getmApi();
 
@@ -74,7 +73,16 @@ public class ListBooksFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(mActivity,2));
+
+        Bundle args = getArguments();
+        int typeDisplay = 1;
+        if (args != null) {
+            typeDisplay = args.getInt(MainActivity.ARG_DISPLAY);
+        }
+
+        if(typeDisplay == MainActivity.GRID) recyclerView.setLayoutManager(new GridLayoutManager(mActivity,2));
+        else recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+
         recyclerView.setAdapter(adapter);
 
 

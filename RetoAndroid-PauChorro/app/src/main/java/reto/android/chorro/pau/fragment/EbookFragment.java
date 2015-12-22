@@ -44,7 +44,7 @@ public class EbookFragment extends Fragment {
 
     public void putInfoBook(int id, View view) {
 
-        Book book = Application.getBooks().elementAt(id);
+        Book book = Application.getBooks().get(id);
 
         mTxtAuthor = (TextView) view.findViewById(R.id.title);
         mTxtTitle = (TextView) view.findViewById(R.id.author);

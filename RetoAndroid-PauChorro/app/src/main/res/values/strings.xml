@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Reto Android  - Pau Chorro</string>
+    <string name="app_name">BQ Library</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
