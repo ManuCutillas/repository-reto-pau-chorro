@@ -14,6 +14,13 @@ import android.widget.Toast;
 
 import com.dropbox.client2.android.AndroidAuthSession;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+
+import nl.siegmann.epublib.domain.Book;
 import reto.android.chorro.pau.fragment.EbookFragment;
 import reto.android.chorro.pau.fragment.ListBooksFragment;
 
@@ -27,7 +34,8 @@ public class MainActivity extends DropboxActivity {
     public static final String ARG_DISPLAY = "Args_display";
     public static final int GRID = 1;
     public static final int LIST = 2;
-    boolean grid;
+    boolean grid = true;
+    boolean sortByTitle = true;
 
 
 
@@ -58,22 +66,46 @@ public class MainActivity extends DropboxActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_preferencias:
-                Toast.makeText(this, "Preferencias", Toast.LENGTH_LONG).show();
+            case R.id.sort_list:
+
+                String msg = "";
+                if(!sortByTitle)
+                {
+                    sortByTitle = true;
+                    sortByTitle();
+                    msg = "Sorted by Title";
+                    item.setTitle("Sort by Date");
+                    item.setIcon(R.drawable.ic_date_range_black_24dp);
+                }
+                else
+                {
+                    sortByTitle = false;
+                    sortByDate();
+                    msg = "Sorted by Date";
+                    item.setTitle("Sort by Title");
+                    item.setIcon(R.drawable.ic_sort_by_alpha_black_24dp);
+                }
+
+                Application.getAdapter().notifyDataSetChanged();
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 
                 break;
-            case R.id.menu_ultimo:
+            case R.id.type_view:
                 if(grid) {
                     grid = false;
                     changeList(LIST);
+                    item.setTitle("Change to GridView");
+                    item.setIcon(R.drawable.ic_view_module_black_24dp);
                 }
                 else {
                     grid = true;
                     changeList(GRID);
+                    item.setTitle("Change to ListView");
+                    item.setIcon(R.drawable.ic_view_headline_black_24dp);
                 }
                 break;
-            case R.id.menu_acerca:
-                Toast.makeText(this, "Acerca de", Toast.LENGTH_LONG).show();
+            case R.id.menu_about:
+                Toast.makeText(this, "App by Pau Chorro", Toast.LENGTH_LONG).show();
                 break;
         }
         return false;
@@ -111,6 +143,64 @@ public class MainActivity extends DropboxActivity {
 
         transaction.commit();
 
+    }
+
+    public void sortByDate()
+    {
+        //SORT by TITLE
+        Collections.sort(Application.getBooks(), new Comparator<Book>() {
+            @Override
+            public int compare(Book lhs, Book rhs) {
+
+                Date lhsDate;
+                Date rhsDate;
+
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+                String dateInString = "";
+
+                try {
+
+                    if (lhs.getMetadata().getDates().size() > 1) {
+                        dateInString = lhs.getMetadata().getDates().get(1).getValue();
+                        lhsDate = formatter.parse(dateInString);
+                    } else {
+                        lhsDate = new Date();
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    lhsDate = new Date();
+                }
+
+                try {
+                    if (rhs.getMetadata().getDates().size() > 1) {
+                        dateInString = rhs.getMetadata().getDates().get(1).getValue();
+                        rhsDate = formatter.parse(dateInString);
+                    } else {
+                        rhsDate = new Date();
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    rhsDate = new Date();
+                }
+
+
+                return lhsDate.compareTo(rhsDate);
+            }
+        });
+    }
+
+
+    public void sortByTitle()
+    {
+        //SORT by TITLE
+        Collections.sort(Application.getBooks(), new Comparator<Book>() {
+            @Override
+            public int compare(Book lhs, Book rhs) {
+                return lhs.getTitle().compareTo(rhs.getTitle());
+            }
+        });
     }
 
 

@@ -1,6 +1,5 @@
 package reto.android.chorro.pau.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,19 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
-
-import java.util.Vector;
-
-import nl.siegmann.epublib.epub.Main;
 import reto.android.chorro.pau.Adapter.AdapterBook;
 import reto.android.chorro.pau.Application;
 import reto.android.chorro.pau.DropboxActivity;
-import reto.android.chorro.pau.GetNameFiles;
 import reto.android.chorro.pau.MainActivity;
-import reto.android.chorro.pau.Model.Book;
 import reto.android.chorro.pau.R;
 
 /**
@@ -92,8 +84,9 @@ public class ListBooksFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int id = recyclerView.getChildAdapterPosition(v);
-                Toast.makeText(mActivity.getApplicationContext(),
-                        "Item clicked: " + recyclerView.getChildAdapterPosition(v), Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(mActivity.getApplicationContext(),
+                        "Item clicked: " + recyclerView.getChildAdapterPosition(v),
+                         Toast.LENGTH_SHORT).show();*/
                 ((MainActivity) mActivity).showEbookInfo(id);
 
             }

@@ -10,14 +10,12 @@ import java.util.Vector;
  */
 public class BookBQ{
 
-    private int id;
     private String path;
     private Date dateCreation;
 
     public BookBQ() {}
 
-    public BookBQ(int id, String path, Date dateCreation) {
-        this.id = id;
+    public BookBQ(String path, Date dateCreation) {
         this.path = path;
         this.dateCreation = dateCreation;
     }

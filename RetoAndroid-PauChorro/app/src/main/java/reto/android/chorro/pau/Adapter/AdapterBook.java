@@ -1,26 +1,20 @@
 package reto.android.chorro.pau.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
-
-//import reto.android.chorro.pau.Model.Book;
 import reto.android.chorro.pau.R;
 import nl.siegmann.epublib.domain.Book;
-//import nl.siegmann.epublib.domain.*;
+
 
 /**
  * Created by pauchorroyanguas on 20/12/15.
@@ -31,8 +25,6 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
     private List<Book> mBooks;
     private View.OnClickListener mOnClickListener;
     private Context mContext;
-    public static String mainPath = Environment.getExternalStorageDirectory() +
-            "/";
 
     public AdapterBook(List<Book> books, Context context) {
 
@@ -43,7 +35,6 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
         this.mContext = context;
     }
 
-    //Creamos nuestro ViewHolder, con los tipos de elementos a modificar
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView cover;
         public TextView title;
@@ -71,20 +62,21 @@ public class AdapterBook extends RecyclerView.Adapter<AdapterBook.ViewHolder> {
 
             if (book.getCoverImage() != null) {
                // Log.d("AdapterBook.java", book.getCoverImage().getHref());
-                Picasso.with(mContext).load(book.getCoverImage().getHref()).into(holder.cover);
-
+               // Picasso.with(mContext).load(book.getCoverImage().getHref()).into(holder.cover);
 
                 try {
-                    holder.cover.setImageBitmap(BitmapFactory.decodeStream(book.getCoverImage().getInputStream()));
+                    Bitmap bitmap = BitmapFactory.decodeStream(book.getCoverImage().getInputStream());
+                    holder.cover.setImageBitmap(bitmap);
+                    //Extraemos el color principal de un bitmap
+                    Palette palette = Palette.from(bitmap).generate();
+                    holder.itemView.setBackgroundColor(palette.getLightMutedColor(0));
+                    holder.title.setBackgroundColor(palette.getLightVibrantColor(0));
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
-
     }
-
-
 
     @Override
     public int getItemCount() {

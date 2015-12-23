@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".DropboxActivity">
     <item
-        android:id="@+id/menu_preferencias"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:id="@+id/sort_list"
+        android:icon="@drawable/ic_date_range_black_24dp"
         android:orderInCategory="95"
         app:showAsAction="ifRoom"
-        android:title="Preferencias"/>
+        android:title="Sort by Date"/>
     <item
-        android:id="@+id/menu_ultimo"
-        android:icon="@android:drawable/ic_menu_view"
+        android:id="@+id/type_view"
+        android:icon="@drawable/ic_view_headline_black_24dp"
         android:orderInCategory="100"
         app:showAsAction="ifRoom|withText"
-        android:title="Último leido"/>
+        android:title="Change to listview"/>
     <item
-        android:id="@+id/menu_acerca"
+        android:id="@+id/menu_about"
         android:orderInCategory="110"
         app:showAsAction="never"
-        android:title="Acerca de..."/>
+        android:title="About.."/>
 </menu>

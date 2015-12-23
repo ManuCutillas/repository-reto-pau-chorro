@@ -1,16 +1,20 @@
 package reto.android.chorro.pau.fragment;
 
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 import reto.android.chorro.pau.Application;
-//import reto.android.chorro.pau.Model.Book;
 import nl.siegmann.epublib.domain.Book;
 import reto.android.chorro.pau.R;
 
@@ -21,7 +25,7 @@ public class EbookFragment extends Fragment {
 
     public static String ARG_ID_LIBRO = "id_ebook";
     private static final String TAG = "EbookFragment.class";
-    private TextView mTxtAuthor;
+    private ImageView mCoverImage;
     private TextView mTxtTitle;
 
     @Override
@@ -45,19 +49,21 @@ public class EbookFragment extends Fragment {
     public void putInfoBook(int id, View view) {
 
         Book book = Application.getBooks().get(id);
+        mTxtTitle = (TextView) view.findViewById(R.id.title);
+        mCoverImage = (ImageView) view.findViewById((R.id.ivcover));
 
-        mTxtAuthor = (TextView) view.findViewById(R.id.title);
-        mTxtTitle = (TextView) view.findViewById(R.id.author);
         mTxtTitle.setText(book.getTitle());
-        mTxtAuthor.setText(book.getMetadata().getAuthors().toString());
-
+        try {
+            mCoverImage.setImageBitmap(BitmapFactory.decodeStream(book.getCoverImage().getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void putInfoBook(int id)
     {
         putInfoBook(id, getView());
     }
-
-
 
 }

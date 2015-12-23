@@ -23,7 +23,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -31,6 +37,7 @@ import java.util.Vector;
 import nl.siegmann.epublib.epub.EpubReader;
 //import reto.android.chorro.pau.Model.Book;
 import nl.siegmann.epublib.domain.Book;
+import reto.android.chorro.pau.Model.BookBQ;
 
 /**
  * Created by pauchorroyanguas on 20/12/15.
@@ -52,6 +59,7 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
     List<Book> books;
     public static String mainPath = Environment.getExternalStorageDirectory() +
             "/";
+
 
 
     public GetNameFiles(Context context, DropboxAPI<?> api,
@@ -94,8 +102,6 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
             mDeltaPage = mApi.delta(null);
 
-
-
             int sizeEntries = mDeltaPage.entries.size();
 
             mFileLen = 0L;
@@ -108,10 +114,6 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
                 }
             }
 
-
-
-
-
             books = new Vector<>();
             long i = 0;
             for(DropboxAPI.DeltaEntry<Entry> entry : mDeltaPage.entries)
@@ -120,10 +122,8 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
                     Log.d("Files....", entry.lcPath + ", " + entry.metadata.icon);
 
-
                     String inPath = mainPath+ entry.metadata.fileName();
                     File file=new File(inPath);
-
 
                     try {
 
@@ -137,7 +137,6 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
 
                     publishProgress(i);
                     i++;
-
 
                     Log.d("FILE EXIST", "The file exist");
                     mApi.getFile(entry.lcPath, null, mFos, null);
@@ -154,15 +153,7 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
                     }
 
                     books.add(bookito);
-
-
-                    for(int e = 0; e < bookito.getMetadata().getAuthors().size(); e++)
-                    {
-                        Log.d("Authors:", bookito.getMetadata().getAuthors().get(e) + "");
-                    }
-
                 }
-
             }
 
         } catch (DropboxException e) {
@@ -198,25 +189,35 @@ public class GetNameFiles  extends AsyncTask<Void, Long, Boolean> {
             {
                 Application.getBooks().add(book);
             }
+
+            //SORT by TITLE
+            Collections.sort(Application.getBooks(), new Comparator<Book>() {
+                @Override
+                public int compare(Book lhs, Book rhs) {
+                    return lhs.getTitle().compareTo(rhs.getTitle());
+                }
+            });
+
+
             Application.getAdapter().notifyDataSetChanged();
         }
         else
         {
             Toast.makeText(mContext,
                     mErrorMsg, Toast.LENGTH_SHORT).show();
-            if(mErrorMsg.trim().equalsIgnoreCase("EACCES (Permission denied)"))
-
-            ActivityCompat.requestPermissions((Activity) mContext,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    1);
 
             Application.getBooks().clear();
             for(Book book: books)
             {
                 Application.getBooks().add(book);
             }
+
             Application.getAdapter().notifyDataSetChanged();
         }
 
     }
+
+
+
+
 }

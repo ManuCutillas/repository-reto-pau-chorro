@@ -51,7 +51,6 @@ public class DropboxActivity extends AppCompatActivity {
         AndroidAuthSession session = buildSession();
         mApi = new DropboxAPI<AndroidAuthSession>(session);
 
-
         // Display the proper UI state if logged in or not
         setLoggedIn(mApi.getSession().isLinked());
 
@@ -163,7 +162,6 @@ public class DropboxActivity extends AppCompatActivity {
         }
     }
 
-
     private void clearKeys() {
         SharedPreferences prefs = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
         SharedPreferences.Editor edit = prefs.edit();
@@ -178,7 +176,6 @@ public class DropboxActivity extends AppCompatActivity {
         loadAuth(session);
         return session;
     }
-
 
     public DropboxAPI<AndroidAuthSession> getmApi() {
         return mApi;
